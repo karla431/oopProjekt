@@ -1,6 +1,19 @@
 import java.util.*;
 
 public class Main {
+    static void muuda(){
+
+    }
+    static void eemalda(){
+
+    }
+    static void vaata(){
+
+    }
+    static void suvaline(){
+
+    }
+
 
     static void lisa(){
         Scanner input = new Scanner(System.in);
@@ -46,6 +59,9 @@ public class Main {
 
 
     public static void main(String[] args) {
+        for (int i = 0; i < 7; i++) { //Luuakse 7 ArrayListi tunniplaani sisse, mis tähistavad erinevaid päevasid.
+            Tund.tunniplaan.add(new ArrayList<>());
+        }
         Scanner input = new Scanner(System.in);
         while(true){
             System.out.println("\nMida soovid teha? (Sisesta number)\n" +
@@ -56,7 +72,7 @@ public class Main {
                     "5) Viska täringut\n" +
                     "6) Välju programmist");
             String sisend = input.nextLine();
-            if(Arrays.asList(new String[]{"1","2","3","4","5"}).contains(sisend)){
+            if(Arrays.asList(new String[]{"1","2","3","4","5","6"}).contains(sisend)){
                 if (sisend.equals("1")){ //Siin vastavalt sisendile käivitatakse meetod.
                     lisa();
                 }
@@ -75,10 +91,9 @@ public class Main {
                 else if (sisend.equals("6")) {
                     break;
                 }
-                //TODO Iga optsioon viib eraldi meetodisse.
             }
             else{
-                System.out.println("Väär sisend!"); //Kui sisend ei ole 1,2,3,4 või 5, siis antakse vastuseks error.
+                System.out.println("Väär sisend!"); //Kui sisend ei ole 1,2,3,4,5 või 6, siis antakse vastuseks error.
             }
         }
     }
