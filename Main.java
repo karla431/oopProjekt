@@ -52,8 +52,9 @@ public class Main {
                     "1) Lisa tund\n" +
                     "2) Muuda tundi\n" +
                     "3) Eemalda tund\n" +
-                    "4) Viska täringut\n" +
-                    "5) Välju programmist");
+                    "4) Vaata tunniplaani\n" +
+                    "5) Viska täringut\n" +
+                    "6) Välju programmist");
             String sisend = input.nextLine();
             if(Arrays.asList(new String[]{"1","2","3","4","5"}).contains(sisend)){
                 if (sisend.equals("1")){ //Siin vastavalt sisendile käivitatakse meetod.
@@ -66,9 +67,12 @@ public class Main {
                     eemalda();
                 }
                 else if (sisend.equals("4")) {
-                    suvaline();
+                    vaata();
                 }
                 else if (sisend.equals("5")) {
+                    suvaline();
+                }
+                else if (sisend.equals("6")) {
                     break;
                 }
                 //TODO Iga optsioon viib eraldi meetodisse.

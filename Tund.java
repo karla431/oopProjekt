@@ -4,7 +4,7 @@ public class Tund {
     private String nimi;
     private Set<String> päevad;
     private Set<String> vajalikudAsjad;
-    private static Tund[][] tunniplaan; //Maatriks, kus on i-ndal real kõik i-nda päeva tunnid.
+    private static ArrayList<ArrayList<Tund>> tunniplaan; //Maatriks, kus on i-ndal real kõik i-nda päeva tunnid.
     private static Set<Tund> olemasolevadTunnid = new HashSet<>();
 
     public Tund(String nimi, Set<String> päevad, Set<String> vajalikudAsjad) {
