@@ -4,7 +4,7 @@ public class Tund {
     private String nimi;
     private Set<String> päevad;
     private Set<String> vajalikudAsjad;
-    private static Tund[][] tunniplaan;
+    private static Tund[][] tunniplaan; //Maatriks, kus on i-ndal real kõik i-nda päeva tunnid.
     private static Set<Tund> olemasolevadTunnid = new HashSet<>();
 
     public Tund(String nimi, Set<String> päevad, Set<String> vajalikudAsjad) {
@@ -49,11 +49,12 @@ public class Tund {
     public static boolean lisaTund(String nimi, Set<String> päevad, Set<String> asjad){
         Iterator<Tund> lugeja = olemasolevadTunnid.iterator();
         while(lugeja.hasNext()){
-            if(lugeja.next().getNimi() == nimi){
+            if(lugeja.next().getNimi() == nimi){ //Kontrollitakse, kas tundide seas eksisteerib juba antud nimega tundi või mitte.
                 return false;
             }
         }
-        olemasolevadTunnid.add(new Tund(nimi,päevad,asjad));
+        olemasolevadTunnid.add(new Tund(nimi,päevad,asjad)); //Kui ei eksisteeri, siis lisatakse tund olemasolevate tundide sekka.
         return true;
+        //TODO Lisada tunniplaani lisamine.
     }
 }
