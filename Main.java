@@ -2,8 +2,25 @@ import java.util.*;
 
 public class Main {
     static void muuda(){
-
+        Scanner input = new Scanner(System.in);
+        ArrayList<Tund> tunnid = new ArrayList<>();
+        tunnid.addAll(Tund.olemasolevadTunnid);
+        System.out.println("Millist tundi sa muuta soovid? (Sisesta number)");
+        for (int i = 0; i < tunnid.size(); i++) {
+            System.out.println((i + 1) + ") " + tunnid.get(i).getNimi()); //Kõik olemasolevad tunnid väljastatakse ekraanile.
+        }
+        int tunniNumber = Integer.parseInt(input.nextLine()) - 1;
+        if (tunniNumber < 0 || tunniNumber > tunnid.size()-1){ //Kui sisestatakse väär indeks, siis sellisel juhul väljutakse meetodist.
+            System.out.println("Sisend on väär!\n");
+        }
+        else{ //Kui sisend on kehtiv, siis:
+            System.out.println("Sisesta uus tunni nimi: ");
+            String uusNimi = input.nextLine(); //Võetakse sisendina uus nimi.
+            tunnid.get(tunniNumber).setNimi(uusNimi); //Omistatakse antud tunnile uus nimi.
+            System.out.println("Tunni nimi on muudetud!\n");
+        }
     }
+
     static void eemalda(){
 
     }
@@ -11,7 +28,7 @@ public class Main {
 
     }
     static void suvaline(){
-
+        System.out.println("Viskasid täringul " + Math.round(Math.random()*5+1)); //Genereeritakse suvaline number vahemikus 1-6 ja väljastatakse ekraanile
     }
 
 
@@ -66,7 +83,7 @@ public class Main {
         while(true){
             System.out.println("\nMida soovid teha? (Sisesta number)\n" +
                     "1) Lisa tund\n" +
-                    "2) Muuda tundi\n" +
+                    "2) Muuda tunni nime\n" +
                     "3) Eemalda tund\n" +
                     "4) Vaata tunniplaani\n" +
                     "5) Viska täringut\n" +
