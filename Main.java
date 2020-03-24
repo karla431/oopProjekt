@@ -1,5 +1,9 @@
 import net.bytebuddy.asm.Advice;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -9,6 +13,51 @@ import java.util.*;
 
 
 public class Main {
+    static void loeFailist() {
+        try (java.util.Scanner sc = new java.util.Scanner(new File("db.txt"), "UTF-8")){
+            while (sc.hasNextLine()) {
+                String rida = sc.nextLine();
+                String[] tükid = rida.split("; ");
+                String[] päevad = tükid[1].split(", ");
+                String[] asjad = tükid[2].split(", ");
+                Set<String> asjadSet = new HashSet<>(Arrays.asList(asjad));
+                Set<String> päevadSet = new HashSet<>(Arrays.asList(päevad));
+                Tund.lisaTund(tükid[0],päevadSet,asjadSet);
+                }
+            } catch (FileNotFoundException e) {
+            return;
+        }
+    }
+
+        static void kirjutaFaili() throws IOException {
+            File fail = new File("db.txt");
+            fail.createNewFile();
+            FileWriter kirjutaja = new FileWriter("db.txt");
+            for (Tund tund: Tund.olemasolevadTunnid) {
+                kirjutaja.write(tund.getNimi() + "; ");
+                int lugeja = 0;
+                for (String päev: tund.getPäevad()) {
+                    kirjutaja.write(päev);
+                    if (lugeja != tund.getPäevad().size()-1){
+                        kirjutaja.write(", ");
+                    }
+                    lugeja++;
+                }
+                lugeja = 0;
+                kirjutaja.write("; ");
+                for (String asi: tund.getVajalikudAsjad()) {
+                    kirjutaja.write(asi);
+                    if (lugeja != tund.getVajalikudAsjad().size()-1){
+                        kirjutaja.write(", ");
+                    }
+                    lugeja++;
+                }
+                kirjutaja.write("\n");
+            }
+            kirjutaja.close();
+        }
+
+
     static void muuda(){
         Scanner input = new Scanner(System.in);
         ArrayList<Tund> tunnid = new ArrayList<>();
@@ -62,7 +111,6 @@ public class Main {
         LocalTime õhtu = LocalTime.parse(õhtuStr);
         int päevaNr = DayOfWeek.from(LocalDate.now()).getValue();
         if(LocalTime.now().isAfter(õhtu)){ //Kui kell on hiljem kui 20:00, näidatakse sulle juba homset tunniplaani tänase asemel.
-            päevaNr--; //Kuna tegu on ISO-8601 standardiga, siis esmaspäev = 1 ja pühapäev = 7. Lahutatakse üks, et päevad kattuksid tunniplaani maatriksi indeksitega.
             System.out.println("\nHomsed tunnid on: ");
             for (Tund tund: Tund.tunniplaan.get(päevaNr)) {
                 System.out.println(tund.getNimi() + " - " + tund.getVajalikudAsjad());
@@ -71,6 +119,7 @@ public class Main {
         }
         else{
             System.out.println("\nTänased tunnid on:");
+            päevaNr--; //Kuna tegu on ISO-8601 standardiga, siis esmaspäev = 1 ja pühapäev = 7. Lahutatakse üks, et päevad kattuksid tunniplaani maatriksi indeksitega.
             for (Tund tund: Tund.tunniplaan.get(päevaNr)) {
                 System.out.println(tund.getNimi() + " - " + tund.getVajalikudAsjad());
                 vajaminevadAsjad.addAll(tund.getVajalikudAsjad());
@@ -95,8 +144,7 @@ public class Main {
         System.out.println("Sisesta kõik päevad üks haaval (päeva esimene täht), pärast igat sisestust vajuta enter. \n" +
                 "Kui rohkem päevasid sisestada ei soovi, vajuta enter ilma midagi sisestamata.");
         Set<String> päevad = new HashSet<>(); //Luuakse set päevade jaoks, mil tund toimub, selleks, et ühte päeva mitu korda lisada ei saaks.
-        while(true){ //While tsükkel, millega saab sisestada nii palju päevi, kui isikul vaja on.
-            //TODO Kui midagi on juba sisestatud ja sisestatakse uuesti, siis see hoopis eemaldab selle setist... Tglt see vist on ebavajalik.
+        while(true){ //While tsükkel, millega saab sisestada nii palju päevi, kui isikul vaja on.W
             System.out.println("Sisesta päev, mil tund toimub: ");
             String sisend = input.nextLine().toUpperCase();
             if(sisend.equals("")){ //Kui sisend on tühi, väljutakse tsüklist.
@@ -131,10 +179,11 @@ public class Main {
     }
 
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, IOException {
         for (int i = 0; i < 7; i++) { //Luuakse 7 ArrayListi tunniplaani sisse, mis tähistavad erinevaid päevasid.
             Tund.tunniplaan.add(new ArrayList<>());
         }
+        loeFailist();
         Scanner input = new Scanner(System.in);
         while(true){
             System.out.println("\nMida soovid teha? (Sisesta number)\n" +
@@ -162,6 +211,7 @@ public class Main {
                     suvaline();
                 }
                 else if (sisend.equals("6")) {
+                    kirjutaFaili();
                     break;
                 }
             }
