@@ -5,10 +5,33 @@ public class Main {
 
     }
     static void eemalda(){
-
+        Scanner input = new Scanner(System.in);
+        System.out.println("Millist tundi eemaldada soovid?");
+        String tunniNimi = input.nextLine();
+        if (tunniNimi.isEmpty())
+            return;
+        Iterator<Tund> lugeja = Tund.olemasolevadTunnid.iterator();
+        while(lugeja.hasNext()){
+            if(!lugeja.next().getNimi().equals(tunniNimi)) {//Kontrollitakse, kas on tundi mida eemaldada
+                System.out.println("Sellise nimega tundi pole sinu tunniplaanis!");
+                eemalda();//Kui tundi pole tunniplaanis või tehti typo, siis alustatakse eemalda() meetodit otsast peale
+            }
+            else {//Kui tunniplaanis on see tund olemas siis eemaldatakse see olemasolevatest.
+                Tund.olemasolevadTunnid.removeIf(n -> (n.getNimi().equals(tunniNimi)));//Eemaldab sisendiga samanimelise tunni olemasolevatest tundidest.
+                System.out.println("Tund \"" + tunniNimi + "\" eemaldatud!");
+            }
+        }
     }
+    
     static void vaata(){
-
+        if (Tund.olemasolevadTunnid.size() == 0) {//Kui tunde pole lisatud, siis teadvustame
+            System.out.println("Hetkel pole tunde lisatud.");
+            return;
+        }
+        for (Tund each:Tund.olemasolevadTunnid) {
+            System.out.println(each.toString());
+        }
+        System.out.println("See on kõik");
     }
     static void suvaline(){
 
@@ -19,13 +42,15 @@ public class Main {
         Scanner input = new Scanner(System.in);
         System.out.println("Sisesta tunni nimi: ");
         String tunniNimi = input.nextLine(); //Luuakse sõne tunniNimi, millele omistatakse sisendi väärtus.
+        if (tunniNimi.isEmpty())
+            return;
         System.out.println("Sisesta kõik päevad üks haaval (päeva esimene täht), pärast igat sisestust vajuta enter. \n" +
                 "Kui rohkem päevasid sisestada ei soovi, vajuta enter ilma midagi sisestamata.");
         Set<String> päevad = new HashSet<>(); //Luuakse set päevade jaoks, mil tund toimub, selleks, et ühte päeva mitu korda lisada ei saaks.
         while(true){ //While tsükkel, millega saab sisestada nii palju päevi, kui isikul vaja on.
-            //TODO Kui midagi on juba sisestatud ja sisestatakse uuesti, siis see hoopis eemladab selle setist.
+            //TODO Kui midagi on juba sisestatud ja sisestatakse uuesti, siis see hoopis eemaldab selle setist.
             System.out.println("Sisesta päev, mil tund toimub: ");
-            String sisend = input.nextLine();
+            String sisend = input.nextLine().toUpperCase();
             if(sisend.equals("")){ //Kui sisend on tühi, väljutakse tsüklist.
                 break;
             }
