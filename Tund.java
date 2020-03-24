@@ -62,7 +62,7 @@ public class Tund {
             päevadeIndeksid.put(päev, lugeja2); //Igale päevale omistatakse üks indeks.
             lugeja2++;
         }
-        for (String päev: uus.getPäevad()) { //Käiakse läbi kõik päev, mil tund toimub.
+        for (String päev: uus.getPäevad()) { //Käiakse läbi kõik päevad, mil tund toimub.
             tunniplaan.get(päevadeIndeksid.get(päev)).add(uus); //Võetakse vastavalt tunniplaani maatriksi vastav rida ning lisatakse sinna antud tund.
         }
         return true;
