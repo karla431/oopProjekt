@@ -1,4 +1,12 @@
+import net.bytebuddy.asm.Advice;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
+
 
 public class Main {
     static void muuda(){
@@ -14,7 +22,7 @@ public class Main {
         while(lugeja.hasNext()){
             if(!lugeja.next().getNimi().equals(tunniNimi)) {//Kontrollitakse, kas on tundi mida eemaldada
                 System.out.println("Sellise nimega tundi pole sinu tunniplaanis!");
-                eemalda();//Kui tundi pole tunniplaanis või tehti typo, siis alustatakse eemalda() meetodit otsast peale
+                break;//Kui tundi pole tunniplaanis või tehti typo, siis väljutakse tsüklist.
             }
             else {//Kui tunniplaanis on see tund olemas siis eemaldatakse see olemasolevatest.
                 Tund.olemasolevadTunnid.removeIf(n -> (n.getNimi().equals(tunniNimi)));//Eemaldab sisendiga samanimelise tunni olemasolevatest tundidest.
@@ -23,15 +31,38 @@ public class Main {
         }
     }
     
-    static void vaata(){
+    static void vaata() throws ParseException {
         if (Tund.olemasolevadTunnid.size() == 0) {//Kui tunde pole lisatud, siis teadvustame
             System.out.println("Hetkel pole tunde lisatud.");
             return;
         }
-        for (Tund each:Tund.olemasolevadTunnid) {
-            System.out.println(each.toString());
+        System.out.println("Hetkel olemasolevad tunnid on: ");
+        for (Tund tund:Tund.olemasolevadTunnid) {
+            System.out.println(tund.toString());
         }
-        System.out.println("See on kõik");
+        Set<String> vajaminevadAsjad = new HashSet<>();
+        String õhtuStr = "20:00:00";
+        LocalTime õhtu = LocalTime.parse(õhtuStr);
+        int päevaNr = DayOfWeek.from(LocalDate.now()).getValue();
+        if(LocalTime.now().isAfter(õhtu)){ //Kui kell on hiljem kui 20:00, näidatakse sulle juba homset tunniplaani tänase asemel.
+            päevaNr--; //Kuna tegu on ISO-8601 standardiga, siis esmaspäev = 1 ja pühapäev = 7. Lahutatakse üks, et päevad kattuksid tunniplaani maatriksi indeksitega.
+            System.out.println("\nHomsed tunnid on: ");
+            for (Tund tund: Tund.tunniplaan.get(päevaNr)) {
+                System.out.println(tund.getNimi() + " - " + tund.getVajalikudAsjad());
+                vajaminevadAsjad.addAll(tund.getVajalikudAsjad());
+            }
+        }
+        else{
+            System.out.println("\nTänased tunnid on:");
+            for (Tund tund: Tund.tunniplaan.get(päevaNr)) {
+                System.out.println(tund.getNimi() + " - " + tund.getVajalikudAsjad());
+                vajaminevadAsjad.addAll(tund.getVajalikudAsjad());
+            }
+        }
+        System.out.println("\nVajaminevad esemed on: ");
+        for (String asi: vajaminevadAsjad) {
+            System.out.println(asi);
+        }
     }
     static void suvaline(){
 
@@ -48,7 +79,7 @@ public class Main {
                 "Kui rohkem päevasid sisestada ei soovi, vajuta enter ilma midagi sisestamata.");
         Set<String> päevad = new HashSet<>(); //Luuakse set päevade jaoks, mil tund toimub, selleks, et ühte päeva mitu korda lisada ei saaks.
         while(true){ //While tsükkel, millega saab sisestada nii palju päevi, kui isikul vaja on.
-            //TODO Kui midagi on juba sisestatud ja sisestatakse uuesti, siis see hoopis eemaldab selle setist.
+            //TODO Kui midagi on juba sisestatud ja sisestatakse uuesti, siis see hoopis eemaldab selle setist... Tglt see vist on ebavajalik.
             System.out.println("Sisesta päev, mil tund toimub: ");
             String sisend = input.nextLine().toUpperCase();
             if(sisend.equals("")){ //Kui sisend on tühi, väljutakse tsüklist.
@@ -83,7 +114,7 @@ public class Main {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         for (int i = 0; i < 7; i++) { //Luuakse 7 ArrayListi tunniplaani sisse, mis tähistavad erinevaid päevasid.
             Tund.tunniplaan.add(new ArrayList<>());
         }
